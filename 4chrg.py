@@ -57,7 +57,7 @@ class Gui(tk.Frame):
 		self.checkbox = tk.Checkbutton(self.top_frame, image=self.off_image, selectimage=self.on_image, indicatoron=False,
 			onvalue=ON_LBL, offvalue=OFF_LBL, variable=self.toggle_is_on)
 		self.check_label = tk.Label(self.top_frame, text=self.toggle_is_on.get())
-		self.status_label = tk.Label(self.bot_frame, text='Downloaded 23489234982398.png.')
+		self.status_label = tk.Label(self.bot_frame, text='Copy a 4chan reply URL.')
 
 		for el in [self.checkbox, self.check_label, self.status_label]:
 			el.pack(side='left', pady=10, padx=10)
