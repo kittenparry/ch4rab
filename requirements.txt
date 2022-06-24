@@ -1,2 +1,1 @@
-opencv_python==4.5.5.64
 selenium==4.3.0
