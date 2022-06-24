@@ -1,12 +1,22 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import os
+import re
 
+# https://boards.4channel.org/mu/thread/111250954#p111251146
+# 1-4 characters including numbers for 4chan board names
+pattern = 'https:\/\/boards\.(4chan|4channel).org\/[a-zA-Z0-9]{1,4}\/thread\/[0-9]+#p[0-9]+'
 
 def check_url(url):
 	if not url.startswith('https://boards.4chan.org/') and \
 		not url.startswith('https://boards.4channel.org/'):
 		print('Not 4chan URL, terminating.')
+		return
+
+	print(f'starting for {url}..')
+
+	if not re.fullmatch(pattern, url):
+		print('Not a reply URL, terminating.')
 		return
 
 	RES = 'results'
