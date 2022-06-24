@@ -5,6 +5,7 @@ import os
 import re
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
 
 
 ON_LBL = 'Listening..'
@@ -166,7 +167,7 @@ def download_panel(url, id, end_res):
 	browser = webdriver.Chrome(options=chrome_options)
 	browser.get(url)
 
-	element = browser.find_element_by_id(id)
+	element = browser.find_element(By.ID, id)
 	element.screenshot(end_res)
 
 # --- end: cad.py ---
