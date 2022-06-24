@@ -3,32 +3,41 @@ from selenium.webdriver.chrome.options import Options
 import os
 
 
-URL = 'https://boards.4channel.org/mu/thread/111250954#p111251146'
-ID = URL.split('#')[-1]                   # p111251146
-THREAD = URL.split('/')[-1].split('#')[0] # 111250954
-BOARD = URL.split('/')[-3]                # mu
+def check_url(url):
+	if not url.startswith('https://boards.4chan.org/') and \
+		not url.startswith('https://boards.4channel.org/'):
+		print('Not 4chan URL, terminating.')
+		return
 
-RES = 'results'
-if not os.path.isdir(RES):
-	os.mkdir(RES)
+	RES = 'results'
+	if not os.path.isdir(RES):
+		os.mkdir(RES)
 
-# results/mu/111250954/
-DEST_DIR = os.path.join(RES, BOARD, THREAD)
-if not os.path.isdir(DEST_DIR):
-	os.makedirs(DEST_DIR)
+	# https://boards.4channel.org/mu/thread/111250954#p111251146
+	id = url.split('#')[-1]                   # p111251146
+	thread = url.split('/')[-1].split('#')[0] # 111250954
+	board = url.split('/')[-3]                # mu
 
-END_RES = os.path.join(DEST_DIR, f'{ID}.png')
+	# results/mu/111250954/
+	dest_dir = os.path.join(RES, board, thread)
+	if not os.path.isdir(dest_dir):
+		os.makedirs(dest_dir)
 
-chrome_options = Options()
-chrome_options.add_argument('--headless')
+	end_res = os.path.join(dest_dir, f'{id}.png')
 
-def start():
+	download_panel(url, id, end_res)
+
+def download_panel(url, id, end_res):
+	chrome_options = Options()
+	chrome_options.add_argument('--headless')
+
 	browser = webdriver.Chrome(options=chrome_options)
-	browser.get(URL)
+	browser.get(url)
 
-	element = browser.find_element_by_id(ID)
-	element.screenshot(END_RES)
+	element = browser.find_element_by_id(id)
+	element.screenshot(end_res)
 
 
 if __name__ == '__main__':
-	start()
+	url = 'https://boards.4channel.org/mu/thread/111250954#p111251146'
+	check_url(url)
