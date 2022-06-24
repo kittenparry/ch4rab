@@ -10,14 +10,15 @@ pattern = 'https:\/\/boards\.(4chan|4channel).org\/[a-zA-Z0-9]{1,4}\/thread\/[0-
 def check_url(url):
 	if not url.startswith('https://boards.4chan.org/') and \
 		not url.startswith('https://boards.4channel.org/'):
+		# FIXME: never reaches here, as it gets filtered in the main program already
 		print('Not 4chan URL, terminating.')
-		return
+		return 'Not a 4chan URL.'
 
-	print(f'starting for {url}..')
+	print(f'Starting for {url}..')
 
 	if not re.fullmatch(pattern, url):
 		print('Not a reply URL, terminating.')
-		return
+		return 'Not a 4chan reply URL.'
 
 	RES = 'results'
 	if not os.path.isdir(RES):
@@ -36,6 +37,7 @@ def check_url(url):
 	end_res = os.path.join(dest_dir, f'{id}.png')
 
 	download_panel(url, id, end_res)
+	return f'Complete /{board}/ {id}.png.'
 
 def download_panel(url, id, end_res):
 	chrome_options = Options()

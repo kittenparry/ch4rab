@@ -3,9 +3,6 @@ import threading
 import traceback
 from cad import check_url
 
-# TODO: downloading ID, complete ID status labels
-# TODO: status functions with string returns in cad, rather than here
-
 
 ON_LBL = 'Listening..'
 OFF_LBL = 'Waiting..'
@@ -92,8 +89,7 @@ class Gui(tk.Frame):
 			and not self.is_downloading
 			and not (self.current_url == self.last_url)
 			and (self.current_url.startswith('https://boards.4chan.org/') or self.current_url.startswith('https://boards.4channel.org/'))):
-			print(self.current_url)
-			print(self.last_url)
+
 			self.is_downloading = True
 			self.last_url = self.current_url
 			self.current_url = 'X'
@@ -109,18 +105,24 @@ class Gui(tk.Frame):
 			if (clip_val.startswith('https://boards.4chan.org/') or clip_val.startswith('https://boards.4channel.org/')):
 				self.current_url = clip_val
 		except Exception:
+			# FIXME: could possibly pass this to not fill up the terminal with errors when it copies an image to the clipboard
 			traceback.print_exc()
 
 	def start(self, url):
-		check_url(url)
+		self.update_status('Downloading..')
+		response = check_url(url)
+		print(f'response: {response}')
+		self.update_status(response)
 		self.is_downloading = False
 
+	def update_status(self, text):
+		self.status_label.configure(text=str(text))
 
 def get_geometry():
 	"""Return geometry to spawn the program in the middle of the screen.
 	Only in 1920px width.
 	"""
-	return '250x90+94+145'
+	return '200x90+94+145'
 
 def start_gui():
 	"""Launch GUI."""
