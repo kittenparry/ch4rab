@@ -176,12 +176,12 @@ def get_geometry():
 	"""Return geometry to spawn the program in the middle of the screen.
 	Only in 1920px width.
 	"""
-	return '200x90+94+145'
+	return '215x90+94+145'
 
 def start_gui():
 	"""Launch GUI."""
-	root = tk.Tk(className='4chan-reply-grabber')
-	root.title('4chan-reply-grabber')
+	root = tk.Tk(className='ch4rab')
+	root.title('ch4rab')
 	root.geometry(get_geometry())
 	app = Gui(master=root)
 	app.mainloop()
