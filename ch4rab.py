@@ -6,6 +6,8 @@ import re
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 
 ON_LBL = 'Listening..'
@@ -157,7 +159,10 @@ def check_url(url):
 
 	end_res = os.path.join(dest_dir, f'{id}.png')
 
-	download_panel(url, id, end_res)
+	response = download_panel(url, id, end_res)
+	if response:
+		return response
+
 	return f'Complete /{board}/ {id}.png.'
 
 def download_panel(url, id, end_res):
@@ -167,8 +172,14 @@ def download_panel(url, id, end_res):
 	browser = webdriver.Chrome(options=chrome_options)
 	browser.get(url)
 
-	element = browser.find_element(By.ID, id)
-	element.screenshot(end_res)
+	try: # wait a bit of loading until element could be present on the page
+		element = WebDriverWait(browser, 10).until(
+			EC.presence_of_element_located((By.ID, id))
+		)
+		element.screenshot(end_res)
+	except Exception:
+		traceback.print_exc()
+		return 'Could not get the image.'
 
 # --- end: cad.py ---
 

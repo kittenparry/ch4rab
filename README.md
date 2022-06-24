@@ -14,3 +14,9 @@ pip install -r requirements.txt
 
 #### How-to:
 ![](extras/how-to.png)
+
+
+#### Bundle from source
+```
+pyinstaller --noconfirm --onefile --windowed --icon=icon.ico --add-binary "C:/bin/chromedriver.exe;./chromedriver.exe" ch4rab.py
+```
