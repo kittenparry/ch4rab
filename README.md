@@ -7,8 +7,10 @@ Requires `selenium` with [Chrome WebDriver](https://chromedriver.chromium.org/do
 pip install -r requirements.txt
 ./4chrg.py
 ```
+![](extras/screenshot.png)
 
+#### Result:
+![](extras/result.png)
 
-![](extras/screenshot.png) ➡➡ ![](extras/result.png)
-
+#### How-to:
 ![](extras/how-to.png)
