@@ -1,2 +1,7 @@
 # 4chan-reply-grabber
-Grab the selected reply as an image from 4chan.
+A simple tool to download the selected reply as an image from 4chan. Requires `selenium`.
+
+
+![](extras/screenshot.png) ➡➡ ![](extras/result.png)
+
+![](extras/how-to.png)
