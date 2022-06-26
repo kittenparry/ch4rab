@@ -194,6 +194,10 @@ def start_gui():
 	root = tk.Tk(className='ch4rab')
 	root.title('ch4rab')
 	root.geometry(get_geometry())
+	try:
+		root.iconbitmap('icon.ico')
+	except:
+		pass
 	app = Gui(master=root)
 	app.mainloop()
 
