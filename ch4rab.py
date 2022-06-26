@@ -151,6 +151,7 @@ def check_url(url):
 	id = url.split('#')[-1]                   # p111251146
 	thread = url.split('/')[-1].split('#')[0] # 111250954
 	board = url.split('/')[-3]                # mu
+	edited_url = url.replace('#p', '#pc')     # jump to pc anchor, so the post doesn't get highlighted, yet the post image still loaded if exists
 
 	# results/mu/111250954/
 	dest_dir = os.path.join(RES, board, thread)
@@ -159,7 +160,7 @@ def check_url(url):
 
 	end_res = os.path.join(dest_dir, f'{id}.png')
 
-	response = download_panel(url, id, end_res)
+	response = download_panel(edited_url, id, end_res)
 	if response:
 		return response
 
