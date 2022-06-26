@@ -10,6 +10,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 
+# states/labels for checkbox status
 ON_LBL = 'Listening..'
 OFF_LBL = 'Waiting..'
 
@@ -41,7 +42,7 @@ class Gui(tk.Frame):
 	def colour_scheme(self, mode):
 		"""Define colour scheming for the whole program.
 		
-		Keyword arguments:
+		args:
 		mode -- selection of dark/light colouring for the program. only dark for now.
 		"""
 		if mode == 'dark':
@@ -73,6 +74,7 @@ class Gui(tk.Frame):
 		self.checkbox.configure(bg=self.ac1)
 
 	def update_check_text(self, *args):
+		"""Update the label and its colour in parallel to the state of the checkbox."""
 		if self.toggle_colour.get() == 'red':
 			self.toggle_colour.set('green')
 		else:
@@ -86,11 +88,15 @@ class Gui(tk.Frame):
 		self.after(1000, self.run_listener)
 
 	def check_last_url(self):
-		# if toggle is on
-		# and not downloading
-		# FIXME: i mean, as long as the status callback doesn't return from cad, it will always be not downloading
-		# and current url is not the same as the last
-		# and url is a 4chan url
+		"""Check if the currently copied URL from the clipboard should be considered for downloading.
+		Start a download process if it meets the following conditions:
+		- if checkbox for downloading is ON
+		- and if not currently downloading
+		- and current URL is not the same as the last URL (to prevent unlimited loop of downloading the same thing)
+			* last URL is set to the current URL after the download process begins
+		- if URL is a 4chan URL, check_clipboard() already checks this but somewhat of a safeguard™ to not keep checking at the start of the program
+		Gets called periodically in run_listener().
+		"""
 		if (self.toggle_is_on.get() == ON_LBL 
 			and not self.is_downloading
 			and not (self.current_url == self.last_url)
@@ -103,7 +109,7 @@ class Gui(tk.Frame):
 			t.start()
 
 	def check_clipboard(self):
-		"""Check if a 4chan URL is on clipboard & pass to cad.check_url().
+		"""Check if a 4chan URL is on clipboard and set it to currently copied URL.
 		Gets called periodically in run_listener().
 		"""
 		try:
@@ -115,6 +121,13 @@ class Gui(tk.Frame):
 			traceback.print_exc()
 
 	def start(self, url):
+		"""Initiate the downloading process with the given URL.
+		Just calls check_url() and waits for a response.
+		Changes the status label in accordance with that.
+
+		args:
+		url -- URL of the post that will be downloaded
+		"""
 		self.update_status('Downloading..')
 		response = check_url(url)
 		print(f'response: {response}')
@@ -122,6 +135,11 @@ class Gui(tk.Frame):
 		self.is_downloading = False
 
 	def update_status(self, text):
+		"""Change the status label on the screen with given text.
+
+		args:
+		text -- the string value that will be displayed on screen
+		"""
 		self.status_label.configure(text=str(text))
 
 # --- beg: cad.py ---
@@ -131,6 +149,16 @@ class Gui(tk.Frame):
 pattern = 'https:\/\/boards\.(4chan|4channel).org\/[a-zA-Z0-9]{1,4}\/thread\/[0-9]+#p[0-9]+'
 
 def check_url(url):
+	"""Check if given URL matches the pattern of a 4chan post using regex.
+	If it's not a proper post URL, return.
+	Else, create a dir for the results/downloads.
+	Split the URL in parts to get ID, thread ID and board name for directory names -> results/BOARD/THREAD_ID/POST_ID.png
+	Call download_panel() to finally actually start the downloading process.
+	Wait for a response if it fails, else return completion to parent function.
+
+	args:
+	url -- URL of the post that will be downloaded
+	"""
 	if not url.startswith('https://boards.4chan.org/') and \
 		not url.startswith('https://boards.4channel.org/'):
 		# FIXME: never reaches here, as it gets filtered in the main program already
@@ -167,6 +195,15 @@ def check_url(url):
 	return f'Complete /{board}/ {id}.png.'
 
 def download_panel(url, id, end_res):
+	"""Ready the headless Chrome WebDriver and load the page with given URL.
+	Wait up to 10 seconds till the element with given ID is loaded, then screenshot and save it to end_res.
+	If it isn't able to get a result in that 10 seconds, returns error to the parent function.
+
+	args:
+	url -- edited URL of the post to anchor to post container, rather than post itself to prevent highlighting
+	id -- ID of the post, with which the element will be grabbed
+	end_res -- destination file path (e.g. results/mu/111250954/p111251146.png)
+	"""
 	chrome_options = Options()
 	chrome_options.add_argument('--headless')
 
