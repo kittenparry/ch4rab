@@ -206,6 +206,7 @@ def download_panel(url, id, end_res):
 	"""
 	chrome_options = Options()
 	chrome_options.add_argument('--headless')
+	chrome_options.add_argument('--window-size=800, 600')
 
 	browser = webdriver.Chrome(options=chrome_options)
 	browser.get(url)
